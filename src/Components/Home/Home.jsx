@@ -4,24 +4,24 @@ import { useState, useEffect } from "react";
 export default function Home() {
     const [isVisible, setIsVisible] = useState(false);
     const [activeScent, setActiveScent] = useState(0);
-    const [scrollY, setScrollY] = useState(0);
+    const [logoVisible, setLogoVisible] = useState(false);
+    const [hovered, setHovered] = useState(false);
 
     useEffect(() => {
         setIsVisible(true);
-        
-        const handleScroll = () => {
-            setScrollY(window.scrollY);
-        };
-        
-        window.addEventListener('scroll', handleScroll);
         
         const interval = setInterval(() => {
             setActiveScent((prev) => (prev + 1) % 3);
         }, 4000);
         
+        // Trigger logo animation after initial load
+        const logoTimer = setTimeout(() => {
+            setLogoVisible(true);
+        }, 500);
+        
         return () => {
-            window.removeEventListener('scroll', handleScroll);
             clearInterval(interval);
+            clearTimeout(logoTimer);
         };
     }, []);
 
@@ -47,74 +47,83 @@ export default function Home() {
     ];
 
     return (
-        <div className="w-full min-h-screen bg-gradient-to-b from-[#3E2723] via-[#4E342E] to-[#3E2723]">
+        <div className="w-full min-h-screen bg-white">
+            {/* Modern Asymmetric Layout */}
+            <div className="relative w-full min-h-screen overflow-hidden">
+                {/* Floating Color Blocks - Modern Geometric Design */}
+                <div className="absolute top-0 left-0 w-1/3 h-1/2 bg-[#3E2723] rounded-br-[200px]"></div>
+                <div className="absolute bottom-0 right-0 w-1/4 h-1/3 bg-[#3E2723] rounded-tl-[150px]"></div>
+                <div className="absolute top-1/3 right-1/4 w-40 h-40 bg-[#3E2723] rounded-full opacity-10"></div>
+                <div className="absolute bottom-1/4 left-1/3 w-32 h-32 bg-[#F5F1ED] rounded-full opacity-20"></div>
+                
+                {/* Main Content Grid - Modern Layout */}
+                <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
+                    {/* Hero Section - Modern Card Layout */}
+                    <div className="grid lg:grid-cols-2 gap-16 items-center min-h-screen">
+                        <div className="space-y-8">
+                            <div className="overflow-hidden rounded-2xl">
+                                <div className="bg-[#3E2723] p-1">
+                                    <div className="bg-[#F5F1ED] p-8">
+                                        <span className="text-xs tracking-[0.4em] text-[#3E2723] font-light uppercase">Luxury Parfumerie</span>
+                                    </div>
+                                </div>
+                            </div>
 
+                            {/* <div className="w-32 h-[1px] bg-[#3E2723]"></div> */}
 
-            {/* Hero Section - Full Screen */}
-            <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-                {/* Animated background gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#5D4037]/90 via-[#4E342E] to-[#3E2723]" />
-
-                <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center">
-                    <div 
-                        className="space-y-8"
-                        style={{
-                            opacity: isVisible ? 1 : 0,
-                            transform: isVisible ? 'translateY(0)' : 'translateY(50px)',
-                            transition: 'all 1.5s cubic-bezier(0.16, 1, 0.3, 1)'
-                        }}
-                    >
-                        {/* Brand name */}
-                        <div className="inline-block px-8 py-3 border border-[#A1887F]/30 backdrop-blur-sm mb-8">
-                            <span className="text-xs tracking-[0.4em] text-[#D7CCC8] font-light uppercase">Parfumerie</span>
-                        </div>
-
-                        <h1 className="text-7xl sm:text-8xl lg:text-9xl font-extralight text-[#EFEBE9] tracking-[0.2em] mb-8">
-                            MEEN
-                        </h1>
-
-                        <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-[#A1887F] to-transparent mx-auto mb-8" />
-
-                        <p className="text-xl sm:text-2xl text-[#BCAAA4] font-light max-w-3xl mx-auto leading-relaxed">
-                            Artisanal fragrances crafted from the world's rarest essences
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row gap-6 justify-center pt-12">
-                            <Link
-                                to="/collections"
-                                className="group relative px-12 py-5 bg-gradient-to-r from-[#8D6E63] to-[#6D4C41] text-[#EFEBE9] font-light tracking-[0.3em] uppercase text-sm overflow-hidden"
-                            >
-                                <span className="relative z-10 flex items-center justify-center gap-3">
+                            <div className="flex flex-wrap gap-6 pt-8">
+                                <Link
+                                    to="/collections"
+                                    className="px-10 py-5 bg-[#3E2723] text-[#F5F1ED] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#5D4037] transition-all duration-300"
+                                >
                                     Discover
-                                    <svg className="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </span>
-                                <span className="absolute inset-0 bg-gradient-to-r from-[#6D4C41] to-[#5D4037] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
-                            </Link>
-                            
-                            <Link
-                                to="/about"
-                                className="group relative px-12 py-5 border border-[#A1887F] text-[#D7CCC8] font-light tracking-[0.3em] uppercase text-sm overflow-hidden"
-                            >
-                                <span className="relative z-10">Our Story</span>
-                                <span className="absolute inset-0 bg-[#8D6E63] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
-                            </Link>
+                                </Link>
+                                
+                                <Link
+                                    to="/about"
+                                    className="px-10 py-5 border border-[#3E2723] text-[#3E2723] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#3E2723] hover:text-[#F5F1ED] transition-all duration-300"
+                                >
+                                    Our Story
+                                </Link>
+                            </div>
+                        </div>
+                        
+                        <div className="relative hidden lg:block">
+                            <div className="relative w-full h-96 bg-[#F5F1ED] rounded-3xl overflow-hidden border border-[#3E2723]/20">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    {/* Entire Box with Brown Background and Modern Animations */}
+                                    <div 
+                                        className={`bg-[#3E2723] w-64 h-64 rounded-2xl flex items-center justify-center transition-all duration-700 ease-out transform ${
+                                            logoVisible ? 'scale-100 opacity-100 rotate-0' : 'scale-50 opacity-0 rotate-12'
+                                        } ${hovered ? 'shadow-2xl shadow-[#3E2723]/50' : ''}`}
+                                        onMouseEnter={() => setHovered(true)}
+                                        onMouseLeave={() => setHovered(false)}
+                                    >
+                                        <h1 className={`text-6xl font-extralight text-[#F5F1ED] tracking-[0.3em] transition-all duration-500 ${
+                                            hovered ? 'scale-110' : 'scale-100'
+                                        }`}>
+                                            meen
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            {/* Signature Scents Carousel */}
-            <section className="relative py-32 overflow-hidden">
+            {/* Modern Carousel Section */}
+            <div className="relative py-32 bg-gradient-to-b from-white to-[#F5F1ED]/30">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-20">
-                        <span className="text-sm tracking-[0.3em] text-[#A1887F] font-light uppercase">Signature Collection</span>
-                        <h2 className="text-5xl sm:text-6xl lg:text-7xl font-light text-[#EFEBE9] mt-6 mb-8">Featured Scents</h2>
-                        <div className="w-24 h-[1px] bg-[#A1887F] mx-auto" />
+                        <div className="inline-block px-6 py-3 bg-[#3E2723] mb-6">
+                            <span className="text-sm tracking-[0.3em] text-[#F5F1ED] font-light uppercase">Signature Collection</span>
+                        </div>
+                        <h2 className="text-6xl lg:text-7xl font-light text-[#3E2723] mt-6 mb-8">Featured Scents</h2>
+                        <div className="w-24 h-[1px] bg-[#3E2723] mx-auto" />
                     </div>
 
-                    <div className="relative h-[600px]">
+                    <div className="relative h-[700px]">
                         {signatureScents.map((scent, index) => (
                             <div
                                 key={index}
@@ -122,35 +131,36 @@ export default function Home() {
                                     activeScent === index ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
                                 }`}
                             >
-                                <div className="grid md:grid-cols-2 gap-12 items-center h-full">
-                                    <div className="relative group h-full">
-                                        <div className="absolute -inset-4 bg-gradient-to-r from-[#8D6E63]/30 to-[#6D4C41]/30 blur-2xl opacity-50 group-hover:opacity-75 transition-opacity duration-700" />
-                                        <img
-                                            src={scent.image}
-                                            alt={scent.name}
-                                            className="relative w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000"
-                                        />
+                                <div className="grid lg:grid-cols-2 gap-16 items-center h-full">
+                                    <div className="relative">
+                                        <div className="bg-[#3E2723] p-1 rounded-3xl">
+                                            <div className="bg-[#F5F1ED] rounded-3xl overflow-hidden">
+                                                <img
+                                                    src={scent.image}
+                                                    alt={scent.name}
+                                                    className="w-full h-96 object-cover"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                     <div className="space-y-8">
-                                        <div>
-                                            <span className="text-6xl font-extralight text-[#8D6E63]/20">0{index + 1}</span>
+                                        <div className="flex items-end gap-4">
+                                            <span className="text-8xl font-extralight text-[#3E2723]/20">0{index + 1}</span>
+                                            <div className="w-16 h-[1px] bg-[#3E2723]"></div>
                                         </div>
-                                        <h3 className="text-4xl sm:text-5xl font-light text-[#EFEBE9]">{scent.name}</h3>
-                                        <div className="w-20 h-[1px] bg-[#A1887F]" />
-                                        <p className="text-lg text-[#BCAAA4] font-light">{scent.description}</p>
-                                        <div className="flex items-center gap-3">
+                                        <h3 className="text-5xl font-light text-[#3E2723]">{scent.name}</h3>
+                                        <div className="w-24 h-[1px] bg-[#3E2723]" />
+                                        <p className="text-xl text-[#4E342E] font-light max-w-lg">{scent.description}</p>
+                                        <div className="flex flex-wrap items-center gap-3 pt-4">
                                             <span className="text-sm text-[#8D6E63] uppercase tracking-wider font-light">Notes:</span>
-                                            <span className="text-[#D7CCC8] font-light">{scent.notes}</span>
+                                            <span className="text-[#3E2723] font-light">{scent.notes}</span>
                                         </div>
                                         <Link
                                             to="/collections"
-                                            className="inline-flex items-center gap-3 text-[#D7CCC8] hover:text-[#EFEBE9] transition-colors duration-500 group"
+                                            className="inline-block mt-8 px-10 py-4 bg-[#3E2723] text-[#F5F1ED] text-sm tracking-wider uppercase font-light hover:bg-[#5D4037] transition-all duration-300"
                                         >
-                                            <span className="text-sm tracking-wider uppercase font-light">Explore</span>
-                                            <svg className="w-5 h-5 transform group-hover:translate-x-2 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </svg>
+                                            Explore Collection
                                         </Link>
                                     </div>
                                 </div>
@@ -158,79 +168,88 @@ export default function Home() {
                         ))}
                     </div>
 
-                    {/* Carousel dots */}
-                    <div className="flex justify-center gap-3 mt-16">
+                    {/* Modern Carousel Indicators */}
+                    <div className="flex justify-center gap-4 mt-16">
                         {signatureScents.map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => setActiveScent(index)}
-                                className={`h-[2px] transition-all duration-500 ${
-                                    activeScent === index ? 'bg-[#A1887F] w-16' : 'bg-[#6D4C41] w-8 hover:bg-[#8D6E63]'
+                                className={`h-3 w-3 rounded-full transition-all duration-500 ${
+                                    activeScent === index ? 'bg-[#3E2723] w-12' : 'bg-[#8D6E63]'
                                 }`}
                             />
                         ))}
                     </div>
                 </div>
-            </section>
+            </div>
 
-            {/* The Craft Section */}
-            <section className="relative py-32 bg-gradient-to-b from-transparent via-[#4E342E]/50 to-transparent">
-                <div className="max-w-6xl mx-auto px-6">
-                    <div className="grid md:grid-cols-2 gap-16 items-center">
-                        <div className="space-y-8">
-                            <span className="text-sm tracking-[0.3em] text-[#A1887F] font-light uppercase">Our Process</span>
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#EFEBE9]">The Art of Perfumery</h2>
-                            <div className="w-20 h-[1px] bg-[#A1887F]" />
-                            <p className="text-lg text-[#BCAAA4] font-light leading-relaxed">
-                                Each meen fragrance is meticulously crafted by master perfumers using time-honored techniques and the finest raw materials sourced from around the globe.
-                            </p>
-                            <p className="text-base text-[#8D6E63] font-light leading-relaxed">
-                                From the delicate extraction of essential oils to the precise blending of notes, every step is performed with unwavering dedication to perfection.
-                            </p>
+            {/* Modern Stats Section - Asymmetric Grid */}
+            <div className="relative py-32 bg-white">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#3E2723] rounded-bl-[200px]"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#F5F1ED] rounded-tr-[150px]"></div>
+                
+                <div className="relative max-w-7xl mx-auto px-6">
+                    <div className="grid lg:grid-cols-2 gap-24 items-center">
+                        <div className="space-y-12">
+                            <div className="space-y-6">
+                                <span className="text-sm tracking-[0.3em] text-[#3E2723] font-light uppercase">Craftsmanship</span>
+                                <h2 className="text-5xl lg:text-6xl font-light text-[#3E2723]">The Art of Perfumery</h2>
+                                <div className="w-24 h-[1px] bg-[#3E2723]" />
+                            </div>
+                            
+                            <div className="space-y-6">
+                                <p className="text-xl text-[#4E342E] font-light leading-relaxed">
+                                    Each meen fragrance is meticulously crafted by master perfumers using time-honored techniques and the finest raw materials sourced from around the globe.
+                                </p>
+                                <p className="text-lg text-[#6D4C41] font-light leading-relaxed">
+                                    From the delicate extraction of essential oils to the precise blending of notes, every step is performed with unwavering dedication to perfection.
+                                </p>
+                            </div>
+                            
                             <Link
                                 to="/about"
-                                className="inline-flex items-center gap-3 text-[#D7CCC8] hover:text-[#EFEBE9] transition-colors duration-500 group pt-4"
+                                className="inline-block px-10 py-4 border border-[#3E2723] text-[#3E2723] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#3E2723] hover:text-[#F5F1ED] transition-all duration-300"
                             >
-                                <span className="text-sm tracking-wider uppercase font-light">Learn More</span>
-                                <svg className="w-5 h-5 transform group-hover:translate-x-2 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
+                                Learn More
                             </Link>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4">
-                                <div className="bg-[#3E2723]/50 p-8 border border-[#6D4C41]/30 backdrop-blur-sm">
-                                    <div className="text-4xl font-light text-[#EFEBE9] mb-4">75+</div>
-                                    <div className="text-sm text-[#BCAAA4] font-light uppercase tracking-wider">Years Heritage</div>
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="bg-[#3E2723] p-8 text-[#F5F1ED] transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                                {/* Entire Box with Brown Background and Modern Animation */}
+                                <div className="bg-[#3E2723] w-full h-24 rounded-lg mb-4 flex items-center justify-center transform transition-all duration-500 hover:scale-105 hover:shadow-lg">
+                                    <div className="text-3xl font-extralight text-[#F5F1ED] tracking-[0.3em]">MEEN</div>
                                 </div>
-                                <div className="bg-[#3E2723]/50 p-8 border border-[#6D4C41]/30 backdrop-blur-sm">
-                                    <div className="text-4xl font-light text-[#EFEBE9] mb-4">50+</div>
-                                    <div className="text-sm text-[#BCAAA4] font-light uppercase tracking-wider">Unique Scents</div>
-                                </div>
+                                <div className="text-sm font-light uppercase tracking-wider">Years Heritage</div>
                             </div>
-                            <div className="space-y-4 mt-8">
-                                <div className="bg-[#3E2723]/50 p-8 border border-[#6D4C41]/30 backdrop-blur-sm">
-                                    <div className="text-4xl font-light text-[#EFEBE9] mb-4">100%</div>
-                                    <div className="text-sm text-[#BCAAA4] font-light uppercase tracking-wider">Handcrafted</div>
-                                </div>
-                                <div className="bg-[#3E2723]/50 p-8 border border-[#6D4C41]/30 backdrop-blur-sm">
-                                    <div className="text-4xl font-light text-[#EFEBE9] mb-4">25+</div>
-                                    <div className="text-sm text-[#BCAAA4] font-light uppercase tracking-wider">Awards Won</div>
-                                </div>
+                            <div className="bg-[#F5F1ED] border border-[#3E2723] p-8 text-[#3E2723] transform -rotate-3 hover:rotate-0 transition-transform duration-500 mt-12">
+                                <div className="text-5xl font-light mb-4">50+</div>
+                                <div className="text-sm font-light uppercase tracking-wider">Unique Scents</div>
+                            </div>
+                            <div className="bg-[#F5F1ED] border border-[#3E2723] p-8 text-[#3E2723] transform rotate-2 hover:rotate-0 transition-transform duration-500 -mt-6">
+                                <div className="text-5xl font-light mb-4">100%</div>
+                                <div className="text-sm font-light uppercase tracking-wider">Handcrafted</div>
+                            </div>
+                            <div className="bg-[#3E2723] p-8 text-[#F5F1ED] transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                                <div className="text-5xl font-light mb-4">25+</div>
+                                <div className="text-sm font-light uppercase tracking-wider">Awards Won</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            {/* Testimonials Section */}
-            <section className="relative py-32">
-                <div className="max-w-5xl mx-auto px-6">
+            {/* Modern Testimonials Section */}
+            <div className="relative py-32 bg-gradient-to-t from-[#F5F1ED]/30 to-white">
+                <div className="absolute top-0 left-0 w-40 h-40 bg-[#3E2723] rounded-br-[200px]"></div>
+                
+                <div className="relative max-w-7xl mx-auto px-6">
                     <div className="text-center mb-20">
-                        <span className="text-sm tracking-[0.3em] text-[#A1887F] font-light uppercase">Testimonials</span>
-                        <h2 className="text-5xl sm:text-6xl lg:text-7xl font-light text-[#EFEBE9] mt-6 mb-8">What They Say</h2>
-                        <div className="w-24 h-[1px] bg-[#A1887F] mx-auto" />
+                        <div className="inline-block px-6 py-3 bg-[#F5F1ED] border border-[#3E2723] mb-6">
+                            <span className="text-sm tracking-[0.3em] text-[#3E2723] font-light uppercase">Testimonials</span>
+                        </div>
+                        <h2 className="text-6xl lg:text-7xl font-light text-[#3E2723] mt-6 mb-8">What They Say</h2>
+                        <div className="w-24 h-[1px] bg-[#3E2723] mx-auto" />
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8">
@@ -241,60 +260,55 @@ export default function Home() {
                         ].map((testimonial, index) => (
                             <div 
                                 key={index}
-                                className="bg-[#3E2723]/30 border border-[#6D4C41]/30 p-8 hover:border-[#A1887F]/50 transition-all duration-500"
+                                className="bg-white border border-[#3E2723]/20 p-8 hover:border-[#3E2723] transition-all duration-500 transform hover:-translate-y-2"
                             >
                                 <div className="flex gap-1 mb-6">
                                     {[...Array(5)].map((_, i) => (
-                                        <svg key={i} className="w-4 h-4 text-[#A1887F]" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg key={i} className="w-5 h-5 text-[#8D6E63]" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                     ))}
                                 </div>
-                                <p className="text-[#BCAAA4] font-light mb-6 leading-relaxed italic">"{testimonial.text}"</p>
-                                <div className="border-t border-[#6D4C41]/30 pt-6">
-                                    <h4 className="text-[#EFEBE9] font-light mb-1">{testimonial.name}</h4>
+                                <p className="text-[#4E342E] font-light mb-6 leading-relaxed italic">"{testimonial.text}"</p>
+                                <div className="border-t border-[#3E2723]/10 pt-6">
+                                    <h4 className="text-[#3E2723] font-light mb-1">{testimonial.name}</h4>
                                     <p className="text-sm text-[#8D6E63] font-light">{testimonial.role}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
-            </section>
+            </div>
 
-            {/* Brand Story Section */}
-            <section className="relative py-32 overflow-hidden">
-                <div className="absolute inset-0">
-                    <img
-                        src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=1400&auto=format&fit=crop"
-                        alt="meen atelier"
-                        className="w-full h-full object-cover opacity-20"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#3E2723] via-[#4E342E]/90 to-[#3E2723]/80" />
-                </div>
-
-                <div className="relative max-w-4xl mx-auto px-6 text-center">
-                    <span className="text-sm tracking-[0.3em] text-[#A1887F] font-light uppercase">Since 1947</span>
-                    <h2 className="text-5xl sm:text-6xl lg:text-7xl font-light text-[#EFEBE9] mt-6 mb-8">A Legacy of Excellence</h2>
-                    <div className="w-24 h-[1px] bg-[#A1887F] mx-auto mb-12" />
-                    <p className="text-xl text-[#BCAAA4] font-light leading-relaxed mb-8">
+            {/* Modern Final Section */}
+            <div className="relative py-32 bg-[#3E2723]">
+                <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#F5F1ED] rounded-tl-[200px] opacity-10"></div>
+                
+                <div className="relative max-w-5xl mx-auto px-6 text-center">
+                    <span className="text-sm tracking-[0.3em] text-[#F5F1ED]/80 font-light uppercase">Since 1947</span>
+                    <h2 className="text-6xl lg:text-7xl font-light text-[#F5F1ED] mt-6 mb-8">A Legacy of Excellence</h2>
+                    <div className="w-24 h-[1px] bg-[#F5F1ED] mx-auto mb-12" />
+                    <p className="text-2xl text-[#F5F1ED]/90 font-light leading-relaxed mb-12 max-w-3xl mx-auto">
                         For over seven decades, meen has been synonymous with uncompromising quality and timeless elegance. 
                         Our master perfumers blend tradition with innovation to create fragrances that transcend time.
                     </p>
-                    <Link
-                        to="/about"
-                        className="inline-flex items-center gap-3 px-12 py-5 border border-[#A1887F] text-[#D7CCC8] font-light tracking-[0.3em] uppercase text-sm hover:bg-[#8D6E63]/20 transition-all duration-500"
-                    >
-                        <span>Discover Our Story</span>
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </Link>
+                    <div className="flex flex-wrap justify-center gap-6">
+                        <Link
+                            to="/about"
+                            className="px-12 py-5 border border-[#F5F1ED] text-[#F5F1ED] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#F5F1ED] hover:text-[#3E2723] transition-all duration-300"
+                        >
+                            Discover Our Story
+                        </Link>
+                        
+                        <Link
+                            to="/collections"
+                            className="px-12 py-5 bg-[#F5F1ED] text-[#3E2723] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#F5F1ED]/90 transition-all duration-300"
+                        >
+                            Shop Collection
+                        </Link>
+                    </div>
                 </div>
-            </section>
-
-            <style jsx>{`
-                /* No animations needed */
-            `}</style>
+            </div>
         </div>
     );
 }

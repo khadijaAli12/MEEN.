@@ -6,6 +6,7 @@ export default function Collections() {
     const [hoveredCollection, setHoveredCollection] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [hoveredProduct, setHoveredProduct] = useState(null);
+    const [animationTrigger, setAnimationTrigger] = useState(false);
 
     const collections = [
         {
@@ -145,32 +146,74 @@ export default function Collections() {
         ? collections 
         : collections.filter(c => c.category === selectedCategory);
 
+    // Trigger animations on mount
+    React.useEffect(() => {
+        setAnimationTrigger(true);
+        
+        // Reset animation trigger after a delay
+        const timer = setTimeout(() => {
+            setAnimationTrigger(false);
+        }, 1000);
+        
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-[#3E2723] via-[#4E342E] to-[#3E2723] py-20">
-            {/* Hero Section */}
-            <div className="max-w-7xl mx-auto px-6 mb-16">
-                <div className="text-center">
-                    <span className="text-sm tracking-[0.3em] text-[#A1887F] font-light uppercase">Our Fragrances</span>
-                    <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light text-[#EFEBE9] mt-6 mb-6">Collections</h1>
-                    <div className="w-24 h-[1px] bg-[#A1887F] mx-auto mb-8" />
-                    <p className="text-lg text-[#BCAAA4] max-w-2xl mx-auto font-light">
-                        Discover our curated collections of luxury fragrances
-                    </p>
+        <div className="min-h-screen bg-white py-20">
+            {/* Floating Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#3E2723] rounded-full opacity-5 blur-3xl"></div>
+                <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-[#F5F1ED] rounded-full opacity-10 blur-3xl"></div>
+            </div>
+            
+            {/* Hero Section - Modern Asymmetric Layout */}
+            <div className="max-w-7xl mx-auto px-6 mb-24 relative">
+                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                    <div className="space-y-8">
+                        <div className="overflow-hidden rounded-2xl">
+                            <div className="bg-[#3E2723] p-1">
+                                <div className="bg-[#F5F1ED] p-8">
+                                    <span className="text-xs tracking-[0.4em] text-[#3E2723] font-light uppercase">Our Fragrances</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h1 className="text-6xl lg:text-7xl font-extralight text-[#3E2723] tracking-tight">
+                            Collections
+                        </h1>
+
+                        <div className="w-32 h-[1px] bg-[#3E2723]"></div>
+
+                        <p className="text-2xl text-[#4E342E] font-light max-w-lg leading-relaxed">
+                            Discover our curated collections of luxury fragrances, each telling a unique olfactory story.
+                        </p>
+                    </div>
+                    
+                    <div className="relative hidden lg:block">
+                        <div className="relative w-full h-96 bg-[#F5F1ED] rounded-3xl overflow-hidden border border-[#3E2723]/20">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="text-8xl font-extralight text-[#3E2723] tracking-[0.3em] opacity-10">meen</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Category Filter */}
-            <div className="max-w-7xl mx-auto px-6 mb-12">
-                <div className="flex flex-wrap justify-center gap-3">
-                    {categories.map((category) => (
+            {/* Category Filter - Modern Chip Design */}
+            <div className="max-w-7xl mx-auto px-6 mb-20 relative">
+                <div className="flex flex-wrap justify-center gap-4">
+                    {categories.map((category, index) => (
                         <button
                             key={category.id}
                             onClick={() => setSelectedCategory(category.id)}
-                            className={`px-6 py-3 text-sm font-light tracking-wider uppercase transition-all duration-500 ${
+                            className={`px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-500 rounded-full transform ${
                                 selectedCategory === category.id
-                                    ? 'bg-[#8D6E63] text-[#EFEBE9] border border-[#8D6E63]'
-                                    : 'bg-transparent text-[#BCAAA4] border border-[#6D4C41]/50 hover:border-[#A1887F] hover:text-[#D7CCC8]'
-                            }`}
+                                    ? 'bg-[#3E2723] text-[#F5F1ED] shadow-lg scale-105'
+                                    : 'bg-[#F5F1ED] text-[#3E2723] border border-[#3E2723]/20 hover:bg-[#3E2723] hover:text-[#F5F1ED] hover:scale-105'
+                            } ${animationTrigger ? 'animate-fadeInUp' : ''}`}
+                            style={{
+                                animationDelay: `${index * 0.1}s`
+                            }}
                         >
                             {category.label}
                         </button>
@@ -178,89 +221,120 @@ export default function Collections() {
                 </div>
             </div>
 
-            {/* Collections Grid - Compact Layout */}
-            <div className="max-w-7xl mx-auto px-6 mb-20">
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Collections Grid - Modern Card Layout with Asymmetric Design */}
+            <div className="max-w-7xl mx-auto px-6 mb-28 relative">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredCollections.map((collection, index) => (
                         <div
                             key={index}
-                            className="group relative bg-[#3E2723]/40 border border-[#6D4C41]/30 hover:border-[#A1887F]/50 transition-all duration-500 overflow-hidden"
+                            className={`group relative bg-white border border-[#3E2723]/20 rounded-3xl overflow-hidden transition-all duration-700 hover:shadow-2xl hover:shadow-[#3E2723]/10 transform hover:-translate-y-2 ${
+                                animationTrigger ? 'animate-fadeInUp' : ''
+                            }`}
+                            style={{
+                                animationDelay: `${index * 0.1}s`
+                            }}
                             onMouseEnter={() => setHoveredCollection(index)}
                             onMouseLeave={() => setHoveredCollection(null)}
                         >
-                            {/* Image */}
-                            <div className="relative h-64 overflow-hidden">
+                            {/* Image Container with Modern Overlay */}
+                            <div className="relative h-72 overflow-hidden">
                                 <img
                                     src={collection.image}
                                     alt={collection.name}
-                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#3E2723] via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#3E2723]/70 via-transparent to-transparent"></div>
+                                
+                                {/* Modern Price Tag */}
+                                <div className="absolute top-4 right-4 bg-[#3E2723] text-[#F5F1ED] px-4 py-2 rounded-full text-sm font-light">
+                                    {collection.price}
+                                </div>
                             </div>
 
-                            {/* Content */}
-                            <div className="p-6">
-                                <h3 className="text-2xl font-light text-[#EFEBE9] mb-2">{collection.name}</h3>
-                                <p className="text-sm text-[#8D6E63] font-light mb-4">{collection.description}</p>
+                            {/* Content with Modern Layout */}
+                            <div className="p-8">
+                                <h3 className="text-2xl font-extralight text-[#3E2723] mb-3 group-hover:text-[#6D4C41] transition-colors duration-500">
+                                    {collection.name}
+                                </h3>
+                                <p className="text-sm text-[#4E342E] font-light mb-6 leading-relaxed">
+                                    {collection.description}
+                                </p>
                                 
-                                <div className="flex items-center justify-between pt-4 border-t border-[#6D4C41]/30">
-                                    <span className="text-[#A1887F] font-light">{collection.price}</span>
-                                    <Link
-                                        to="#"
-                                        className="text-sm text-[#D7CCC8] hover:text-[#EFEBE9] uppercase tracking-wider font-light transition-colors flex items-center gap-2 group/link"
-                                    >
-                                        View
-                                        <svg className="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                    </Link>
-                                </div>
+                                {/* Modern CTA Button */}
+                                <Link
+                                    to="#"
+                                    className="inline-flex items-center gap-3 text-[#3E2723] hover:text-[#6D4C41] uppercase tracking-wider font-light group/link transition-colors"
+                                >
+                                    <span>Explore Collection</span>
+                                    <svg className="w-5 h-5 transform group-hover/link:translate-x-2 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </Link>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Featured Products Section - Horizontal Scroll */}
-            <div className="max-w-7xl mx-auto px-6 mb-20">
-                <div className="text-center mb-12">
-                    <span className="text-sm tracking-[0.3em] text-[#A1887F] font-light uppercase">Bestsellers</span>
-                    <h2 className="text-4xl sm:text-5xl font-light text-[#EFEBE9] mt-4 mb-6">Featured Fragrances</h2>
-                    <div className="w-20 h-[1px] bg-[#A1887F] mx-auto" />
+            {/* Featured Products Section - Modern Carousel Style */}
+            <div className="max-w-7xl mx-auto px-6 mb-28 relative">
+                <div className="text-center mb-16">
+                    <div className="inline-block px-6 py-3 bg-[#3E2723] mb-6">
+                        <span className="text-sm tracking-[0.3em] text-[#F5F1ED] font-light uppercase">Bestsellers</span>
+                    </div>
+                    <h2 className="text-5xl lg:text-6xl font-extralight text-[#3E2723] mb-6">Featured Fragrances</h2>
+                    <div className="w-24 h-[1px] bg-[#3E2723] mx-auto" />
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {individualPerfumes.filter(p => p.bestseller).map((perfume, index) => (
                         <div
                             key={index}
-                            className="group relative bg-[#3E2723]/30 border border-[#6D4C41]/30 hover:border-[#A1887F]/50 transition-all duration-500"
+                            className={`group relative bg-white border border-[#3E2723]/20 rounded-3xl overflow-hidden transition-all duration-700 hover:shadow-2xl hover:shadow-[#3E2723]/10 transform hover:-translate-y-2 ${
+                                animationTrigger ? 'animate-fadeInUp' : ''
+                            }`}
+                            style={{
+                                animationDelay: `${index * 0.1}s`
+                            }}
                             onMouseEnter={() => setHoveredProduct(index)}
                             onMouseLeave={() => setHoveredProduct(null)}
                         >
+                            {/* Bestseller Badge */}
                             {perfume.bestseller && (
-                                <div className="absolute top-4 right-4 z-10 px-3 py-1 bg-[#8D6E63] text-[#EFEBE9] text-xs tracking-wider uppercase">
+                                <div className="absolute top-6 right-6 z-10 px-4 py-2 bg-[#3E2723] text-[#F5F1ED] text-xs tracking-wider uppercase rounded-full">
                                     Bestseller
                                 </div>
                             )}
 
-                            <div className="relative h-56 overflow-hidden">
-                                <img
-                                    src={perfume.image}
-                                    alt={perfume.name}
-                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                                />
+                            {/* Image with Modern Frame */}
+                            <div className="relative h-64 overflow-hidden">
+                                <div className="absolute inset-0 bg-[#3E2723] p-1 rounded-3xl">
+                                    <div className="bg-white rounded-2xl overflow-hidden w-full h-full">
+                                        <img
+                                            src={perfume.image}
+                                            alt={perfume.name}
+                                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="p-5">
-                                <h3 className="text-xl font-light text-[#EFEBE9] mb-2">{perfume.name}</h3>
-                                <p className="text-xs text-[#8D6E63] font-light mb-3 line-clamp-2">{perfume.description}</p>
+                            {/* Product Details */}
+                            <div className="p-6">
+                                <h3 className="text-xl font-extralight text-[#3E2723] mb-2 group-hover:text-[#6D4C41] transition-colors duration-500">
+                                    {perfume.name}
+                                </h3>
+                                <p className="text-xs text-[#4E342E] font-light mb-4 line-clamp-2">
+                                    {perfume.description}
+                                </p>
                                 
-                                <div className="flex items-center justify-between mb-3">
-                                    <span className="text-sm text-[#BCAAA4] font-light">{perfume.size}</span>
-                                    <span className="text-lg text-[#A1887F] font-light">{perfume.price}</span>
+                                <div className="flex items-center justify-between mb-6">
+                                    <span className="text-sm text-[#6D4C41] font-light">{perfume.size}</span>
+                                    <span className="text-xl font-extralight text-[#3E2723]">{perfume.price}</span>
                                 </div>
 
-                                <button className="w-full py-3 bg-transparent border border-[#6D4C41]/50 text-[#D7CCC8] text-sm tracking-wider uppercase font-light hover:bg-[#8D6E63] hover:border-[#8D6E63] hover:text-[#EFEBE9] transition-all duration-500">
+                                {/* Modern Add to Cart Button */}
+                                <button className="w-full py-4 bg-[#3E2723] text-[#F5F1ED] text-sm tracking-wider uppercase font-light hover:bg-[#6D4C41] transition-all duration-500 rounded-xl transform hover:scale-[1.02]">
                                     <Link to="/cart">Add to Cart</Link>
                                 </button>
                             </div>
@@ -269,64 +343,95 @@ export default function Collections() {
                 </div>
             </div>
 
-            {/* Fragrance Notes Guide */}
-            <div className="max-w-7xl mx-auto px-6 mb-20">
-                <div className="bg-[#3E2723]/40 border border-[#6D4C41]/30 p-8 lg:p-12">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl sm:text-4xl font-light text-[#EFEBE9] mb-4">Understanding Fragrance</h2>
-                        <div className="w-20 h-[1px] bg-[#A1887F] mx-auto" />
+            {/* Fragrance Notes Guide - Modern Card Layout */}
+            <div className="max-w-7xl mx-auto px-6 mb-28 relative">
+                <div className="text-center mb-16">
+                    <div className="inline-block px-6 py-3 bg-[#F5F1ED] border border-[#3E2723] mb-6">
+                        <span className="text-sm tracking-[0.3em] text-[#3E2723] font-light uppercase">Guide</span>
                     </div>
+                    <h2 className="text-5xl lg:text-6xl font-extralight text-[#3E2723] mb-6">Understanding Fragrance</h2>
+                    <div className="w-24 h-[1px] bg-[#3E2723] mx-auto" />
+                </div>
 
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-to-br from-[#8D6E63] to-[#6D4C41] rounded-full mx-auto mb-4 flex items-center justify-center">
-                                <span className="text-2xl text-[#EFEBE9] font-light">1</span>
+                <div className="grid md:grid-cols-3 gap-8">
+                    {[
+                        {
+                            number: "1",
+                            title: "Top Notes",
+                            description: "The initial impression, lasting 15-30 minutes. Light and volatile scents like citrus and herbs."
+                        },
+                        {
+                            number: "2",
+                            title: "Heart Notes",
+                            description: "The core character, emerging after 30 minutes. Florals, spices, and fruits form the body."
+                        },
+                        {
+                            number: "3",
+                            title: "Base Notes",
+                            description: "The lasting foundation, enduring for hours. Rich woods, musks, and resins provide depth."
+                        }
+                    ].map((note, index) => (
+                        <div 
+                            key={index}
+                            className={`group relative bg-white border border-[#3E2723]/20 p-8 rounded-3xl transition-all duration-700 hover:shadow-2xl hover:shadow-[#3E2723]/10 transform hover:-translate-y-2 ${
+                                animationTrigger ? 'animate-fadeInUp' : ''
+                            }`}
+                            style={{
+                                animationDelay: `${index * 0.1}s`
+                            }}
+                        >
+                            <div className="flex items-center mb-6">
+                                <div className="w-16 h-16 bg-[#3E2723] rounded-2xl flex items-center justify-center mr-4 group-hover:bg-[#6D4C41] transition-colors duration-500">
+                                    <span className="text-2xl text-[#F5F1ED] font-extralight">{note.number}</span>
+                                </div>
+                                <h3 className="text-2xl font-extralight text-[#3E2723] group-hover:text-[#6D4C41] transition-colors duration-500">
+                                    {note.title}
+                                </h3>
                             </div>
-                            <h3 className="text-xl font-light text-[#EFEBE9] mb-3">Top Notes</h3>
-                            <p className="text-sm text-[#BCAAA4] font-light leading-relaxed">
-                                The initial impression, lasting 15-30 minutes. Light and volatile scents like citrus and herbs.
+                            <p className="text-base text-[#4E342E] font-light leading-relaxed">
+                                {note.description}
                             </p>
                         </div>
+                    ))}
+                </div>
+            </div>
 
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-to-br from-[#8D6E63] to-[#6D4C41] rounded-full mx-auto mb-4 flex items-center justify-center">
-                                <span className="text-2xl text-[#EFEBE9] font-light">2</span>
-                            </div>
-                            <h3 className="text-xl font-light text-[#EFEBE9] mb-3">Heart Notes</h3>
-                            <p className="text-sm text-[#BCAAA4] font-light leading-relaxed">
-                                The core character, emerging after 30 minutes. Florals, spices, and fruits form the body.
-                            </p>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-to-br from-[#8D6E63] to-[#6D4C41] rounded-full mx-auto mb-4 flex items-center justify-center">
-                                <span className="text-2xl text-[#EFEBE9] font-light">3</span>
-                            </div>
-                            <h3 className="text-xl font-light text-[#EFEBE9] mb-3">Base Notes</h3>
-                            <p className="text-sm text-[#BCAAA4] font-light leading-relaxed">
-                                The lasting foundation, enduring for hours. Rich woods, musks, and resins provide depth.
-                            </p>
-                        </div>
+            {/* Modern CTA Section */}
+            <div className="max-w-6xl mx-auto px-6 relative">
+                <div className="relative bg-[#3E2723] rounded-3xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#3E2723] to-[#6D4C41]"></div>
+                    <div className="relative p-16 text-center">
+                        <h2 className="text-4xl lg:text-5xl font-extralight text-[#F5F1ED] mb-6">Need Help Choosing?</h2>
+                        <div className="w-24 h-[1px] bg-[#F5F1ED] mx-auto mb-8" />
+                        <p className="text-xl text-[#F5F1ED]/90 mb-10 font-light max-w-2xl mx-auto leading-relaxed">
+                            Book a personal consultation with our fragrance experts to discover your perfect scent.
+                        </p>
+                        <Link
+                            to="/contact"
+                            className="inline-block px-12 py-5 bg-[#F5F1ED] text-[#3E2723] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#F5F1ED]/90 transition-all duration-500 rounded-full transform hover:scale-105"
+                        >
+                            Book Now
+                        </Link>
                     </div>
                 </div>
             </div>
 
-            {/* CTA Section */}
-            <div className="max-w-5xl mx-auto px-6">
-                <div className="bg-gradient-to-br from-[#6D4C41] to-[#5D4037] p-12 text-center">
-                    <h2 className="text-3xl sm:text-4xl font-light text-[#EFEBE9] mb-4">Need Help Choosing?</h2>
-                    <div className="w-20 h-[1px] bg-[#D7CCC8] mx-auto mb-6" />
-                    <p className="text-[#D7CCC8]/90 mb-8 font-light max-w-xl mx-auto">
-                        Book a personal consultation with our fragrance experts
-                    </p>
-                    <Link
-                        to="/contact"
-                        className="inline-block px-10 py-4 bg-[#EFEBE9] text-[#3E2723] font-light tracking-[0.3em] uppercase text-sm hover:bg-[#D7CCC8] transition-all duration-500"
-                    >
-                        Book Now
-                    </Link>
-                </div>
-            </div>
+            <style jsx>{`
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .animate-fadeInUp {
+                    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+                }
+            `}</style>
         </div>
     );
 }

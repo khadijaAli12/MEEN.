@@ -1,9 +1,12 @@
-import { Link, NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import UserContext from '../context/UserContext';
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { user, setUser } = useContext(UserContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -88,14 +91,27 @@ export default function Header() {
                             <span className="absolute top-0 right-0 w-2 h-2 bg-[#A1887F] rounded-full"></span>
                             <span className="absolute inset-0 bg-[#6D4C41]/30 rounded-sm transform scale-0 group-hover:scale-100 transition-transform duration-300" />
                         </Link>
-                        <Link
-                            to="/login"
-                            className="relative px-6 py-2.5 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] transition-all duration-500 hover:text-[#EFEBE9] group overflow-hidden"
-                        >
-                            <span className="relative z-10">Account</span>
-                            <span className="absolute inset-0 bg-[#6D4C41]/40 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-                            <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#A1887F] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-                        </Link>
+                        
+                        {user ? (
+                            <Link
+                                to="/account"
+                                className="relative px-6 py-2.5 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] transition-all duration-500 hover:text-[#EFEBE9] group overflow-hidden"
+                            >
+                                <span className="relative z-10">Account</span>
+                                <span className="absolute inset-0 bg-[#6D4C41]/40 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#A1887F] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                            </Link>
+                        ) : (
+                            <Link
+                                to="/login"
+                                className="relative px-6 py-2.5 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] transition-all duration-500 hover:text-[#EFEBE9] group overflow-hidden"
+                            >
+                                <span className="relative z-10">Account</span>
+                                <span className="absolute inset-0 bg-[#6D4C41]/40 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#A1887F] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                            </Link>
+                        )}
+                        
                         <Link
                             to="/"
                             className="relative px-7 py-3 text-sm font-light tracking-[0.25em] uppercase text-[#EFEBE9] bg-gradient-to-r from-[#6D4C41] to-[#5D4037] overflow-hidden group border border-[#8D6E63] transition-all duration-500 hover:shadow-lg hover:shadow-[#5D4037]/40"
@@ -168,13 +184,25 @@ export default function Header() {
                                 </svg>
                                 Cart
                             </Link>
-                            <Link
-                                to="/login"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="block px-5 py-4 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] hover:text-[#EFEBE9] hover:bg-[#6D4C41]/30 rounded-sm transition-all duration-500"
-                            >
-                                Account
-                            </Link>
+                            
+                            {user ? (
+                                <Link
+                                    to="/account"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="block px-5 py-4 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] hover:text-[#EFEBE9] hover:bg-[#6D4C41]/30 rounded-sm transition-all duration-500"
+                                >
+                                    Account
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/login"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="block px-5 py-4 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] hover:text-[#EFEBE9] hover:bg-[#6D4C41]/30 rounded-sm transition-all duration-500"
+                                >
+                                    Account
+                                </Link>
+                            )}
+                            
                             <Link
                                 to="/"
                                 onClick={() => setMobileMenuOpen(false)}
