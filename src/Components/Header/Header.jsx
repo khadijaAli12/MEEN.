@@ -97,7 +97,7 @@ export default function Header() {
                                 to="/account"
                                 className="relative px-6 py-2.5 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] transition-all duration-500 hover:text-[#EFEBE9] group overflow-hidden"
                             >
-                                <span className="relative z-10">Account</span>
+                                <span className="relative z-10">SIGN OUT</span>
                                 <span className="absolute inset-0 bg-[#6D4C41]/40 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#A1887F] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
                             </Link>
@@ -106,7 +106,7 @@ export default function Header() {
                                 to="/login"
                                 className="relative px-6 py-2.5 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] transition-all duration-500 hover:text-[#EFEBE9] group overflow-hidden"
                             >
-                                <span className="relative z-10">Account</span>
+                                <span className="relative z-10">LOGIN</span>
                                 <span className="absolute inset-0 bg-[#6D4C41]/40 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#A1887F] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
                             </Link>
@@ -191,7 +191,7 @@ export default function Header() {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className="block px-5 py-4 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] hover:text-[#EFEBE9] hover:bg-[#6D4C41]/30 rounded-sm transition-all duration-500"
                                 >
-                                    Account
+                                    SIGN OUT
                                 </Link>
                             ) : (
                                 <Link
@@ -199,7 +199,7 @@ export default function Header() {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className="block px-5 py-4 text-sm font-light tracking-[0.2em] uppercase text-[#D7CCC8] hover:text-[#EFEBE9] hover:bg-[#6D4C41]/30 rounded-sm transition-all duration-500"
                                 >
-                                    Account
+                                    LOGIN
                                 </Link>
                             )}
                             

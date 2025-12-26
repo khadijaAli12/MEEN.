@@ -66,7 +66,7 @@ export default function Collections() {
             notes: { top: "Bergamot, Pink Pepper", heart: "Oud, Rose", base: "Amber, Musk" },
             price: "$285",
             size: "50ml",
-            image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=500&auto=format&fit=crop",
+            image: "https://plus.unsplash.com/premium_photo-1676748933022-e51183e997436?q=80&w=871&auto=format&fit=crop",
             bestseller: true
         },
         {
@@ -75,16 +75,16 @@ export default function Collections() {
             notes: { top: "Lemon, Geranium", heart: "Turkish Rose, Violet", base: "Suede, White Musk" },
             price: "$220",
             size: "50ml",
-            image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=500&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1610461888750-10bfc601b874?q=80&w=1398&auto=format&fit=crop",
             bestseller: false
         },
         {
-            name: "Tobacco Noir",
+            name: "Noir Intense",
             description: "Dark and intoxicating tobacco leaf with cognac warmth",
             notes: { top: "Spices, Cognac", heart: "Tobacco, Tonka", base: "Vanilla, Cedarwood" },
             price: "$245",
             size: "50ml",
-            image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1458538977777-0549b2370168?q=80&w=1474&auto=format&fit=crop",
             bestseller: true
         },
         {
@@ -129,7 +129,7 @@ export default function Collections() {
             notes: { top: "Saffron, Nutmeg", heart: "Black Oud, Rose", base: "Amber, Leather" },
             price: "$450",
             size: "50ml",
-            image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=500&auto=format&fit=crop",
+            image: "https://plus.unsplash.com/premium_photo-1676748933022-e51183e997436?q=80&w=871&auto=format&fit=crop",
             bestseller: true
         }
     ];

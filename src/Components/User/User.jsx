@@ -3,13 +3,19 @@ import { Link, useNavigate } from 'react-router-dom'
 import UserContext from '../context/UserContext'
 
 function User() {
-  const { setUser } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    setUser(null);
+    logout();
     navigate('/login');
   };
+
+  // If user is not logged in, redirect to login
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-white py-20">
@@ -47,11 +53,11 @@ function User() {
             <div className="space-y-4">
               <div>
                 <label className="text-sm text-[#3E2723] font-light uppercase tracking-wider">Full Name</label>
-                <p className="text-lg text-[#3E2723] font-light mt-1">Guest User</p>
+                <p className="text-lg text-[#3E2723] font-light mt-1">{user.name || 'N/A'}</p>
               </div>
               <div>
                 <label className="text-sm text-[#3E2723] font-light uppercase tracking-wider">Email</label>
-                <p className="text-lg text-[#3E2723] font-light mt-1">guest@meen.com</p>
+                <p className="text-lg text-[#3E2723] font-light mt-1">{user.email || 'N/A'}</p>
               </div>
               <button className="mt-6 px-8 py-3 border border-[#3E2723] text-[#3E2723] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#3E2723] hover:text-[#F5F1ED] transition-all duration-500 rounded-full">
                 Edit Profile
@@ -63,31 +69,14 @@ function User() {
           <div className="bg-[#F5F1ED] border border-[#3E2723]/20 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500">
             <h2 className="text-2xl font-extralight text-[#3E2723] mb-4">Recent Orders</h2>
             <div className="space-y-4">
-              <div className="border-b border-[#3E2723]/20 pb-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="text-[#3E2723] font-light">Order #12345</p>
-                    <p className="text-sm text-[#6D4C41] font-light">Oud Royale - 50ml</p>
-                  </div>
-                  <span className="text-sm text-[#3E2723] font-light">$180</span>
-                </div>
-                <p className="text-xs text-[#6D4C41] font-light">Delivered on Dec 1, 2025</p>
-              </div>
-              <div className="border-b border-[#3E2723]/20 pb-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="text-[#3E2723] font-light">Order #12344</p>
-                    <p className="text-sm text-[#6D4C41] font-light">Velvet Rose - 100ml</p>
-                  </div>
-                  <span className="text-sm text-[#3E2723] font-light">$220</span>
-                </div>
-                <p className="text-xs text-[#6D4C41] font-light">Delivered on Nov 28, 2025</p>
+              <div className="text-center py-8">
+                <p className="text-[#6D4C41] font-light">No orders yet</p>
               </div>
               <Link
                 to="/collections"
                 className="inline-flex items-center gap-2 text-[#3E2723] hover:text-[#6D4C41] text-sm font-light transition-colors mt-4"
               >
-                <span className="tracking-wider uppercase">View All Orders</span>
+                <span className="tracking-wider uppercase">Start Shopping</span>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
@@ -99,19 +88,8 @@ function User() {
           <div className="bg-[#F5F1ED] border border-[#3E2723]/20 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500">
             <h2 className="text-2xl font-extralight text-[#3E2723] mb-4">Wishlist</h2>
             <div className="space-y-3">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-white border border-[#3E2723]/20 rounded-lg" />
-                <div className="flex-1">
-                  <p className="text-[#3E2723] font-light">Noir Intense</p>
-                  <p className="text-sm text-[#6D4C41] font-light">$195</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-white border border-[#3E2723]/20 rounded-lg" />
-                <div className="flex-1">
-                  <p className="text-[#3E2723] font-light">Amber Essence</p>
-                  <p className="text-sm text-[#6D4C41] font-light">$165</p>
-                </div>
+              <div className="text-center py-8">
+                <p className="text-[#6D4C41] font-light">Your wishlist is empty</p>
               </div>
               <Link
                 to="/collections"

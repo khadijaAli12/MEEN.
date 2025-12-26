@@ -6,10 +6,12 @@ import Routes from './Routes.jsx'
 import { Home, About, Contact, User } from "./Components/index.js"
 import Collections from './Components/Collections/Collections.jsx'
 import Cart from './Components/Cart/Cart.jsx'
+import Checkout from './Components/Cart/Checkout.jsx'
+import OrderConfirmation from './Components/Cart/OrderConfirmation.jsx'
 import Profile from './Components/AUTH/Profile.jsx'
 import Login from './Components/AUTH/LOGIN.jsx'
 import Signup from './Components/AUTH/Signup.jsx'
-import UserContextProvider from './Components/context/userContextProvider.jsx'
+import UserContextProvider from './Components/context/UserContextProvider.jsx'
 import Loader from './Components/Loader/Loader.jsx'
 
 // const router = createBrowserRouter([
@@ -47,6 +49,8 @@ const router = createBrowserRouter(
       <Route path='about' element={<About />} />
       <Route path='collections' element={<Collections />} />
       <Route path='cart' element={<Cart />} />
+      <Route path='checkout' element={<Checkout />} />
+      <Route path='order/:id' element={<OrderConfirmation />} />
       <Route path='contact' element={<Contact />} />
       <Route path='login' element={<Login />} />
       <Route path='signup' element={<Signup />} />

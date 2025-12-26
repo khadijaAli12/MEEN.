@@ -29,19 +29,19 @@ export default function Home() {
         {
             name: "Oud Royale",
             notes: "Oud, Amber, Vanilla",
-            image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=600&auto=format&fit=crop",
+            image: "https://plus.unsplash.com/premium_photo-1676748933022-e1183e997436?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             description: "A regal composition of rare oud"
         },
         {
             name: "Noir Intense",
             notes: "Tobacco, Leather, Spice",
-            image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=600&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1458538977777-0549b2370168?q=80&w=1474&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             description: "Bold and mysterious elegance"
         },
         {
             name: "Velvet Rose",
             notes: "Rose, Musk, Sandalwood",
-            image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=600&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1610461888750-10bfc601b874?q=80&w=1398&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             description: "Delicate yet captivating allure"
         }
     ];

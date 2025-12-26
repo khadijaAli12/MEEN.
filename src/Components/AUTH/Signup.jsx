@@ -3,24 +3,35 @@ import { Link, useNavigate } from "react-router-dom";
 import userContext from "../context/UserContext";
 
 export default function Signup() {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { setUser } = useContext(userContext);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { register } = useContext(userContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      alert("Passwords don't match!");
+      setError("Passwords don't match!");
       return;
     }
     
-    setUser({ username, email });
-    // Redirect to account page after signup
-    navigate('/account');
+    setLoading(true);
+    setError("");
+    
+    try {
+      await register(name, email, password);
+      // Redirect to account page after signup
+      navigate('/account');
+    } catch (err) {
+      setError(err.message || "Failed to create account");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,16 +51,22 @@ export default function Signup() {
           <h1 className="text-4xl sm:text-5xl font-extralight text-[#3E2723] mt-6 mb-4">Create Account</h1>
           <div className="w-24 h-[1px] bg-[#3E2723] mx-auto" />
         </div>
+        
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-center">
+            {error}
+          </div>
+        )}
 
         {/* Modern Signup Form */}
         <form onSubmit={handleSubmit} className="bg-[#F5F1ED] border border-[#3E2723]/20 p-8 rounded-2xl shadow-xl space-y-6">
           <div>
-            <label className="text-sm text-[#3E2723] font-light uppercase tracking-wider block mb-2">Username</label>
+            <label className="text-sm text-[#3E2723] font-light uppercase tracking-wider block mb-2">Full Name</label>
             <input
               type="text"
-              placeholder="Choose a username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full px-0 py-4 bg-transparent border-b border-[#3E2723]/30 focus:border-[#3E2723] focus:outline-none transition-colors duration-500 text-[#3E2723] text-lg font-light placeholder:text-[#6D4C41]/50"
               required
             />
@@ -95,9 +112,10 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full mt-8 px-12 py-5 bg-[#3E2723] text-[#F5F1ED] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#6D4C41] transition-all duration-500 rounded-full shadow-lg hover:shadow-xl"
+            disabled={loading}
+            className={`w-full mt-8 px-12 py-5 bg-[#3E2723] text-[#F5F1ED] font-light tracking-[0.2em] uppercase text-sm hover:bg-[#6D4C41] transition-all duration-500 rounded-full shadow-lg hover:shadow-xl ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            Sign Up
+            {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
 
           <p className="text-center text-sm text-[#6D4C41] font-light mt-6">
