@@ -1,11 +1,13 @@
 import express from 'express';
 import { admin } from '../middleware/adminMiddleware.js';
 import { protect } from '../middleware/authMiddleware.js';
+import { validateProduct, handleValidationErrors } from '../middleware/validationMiddleware.js';
 import { 
   getAllUsers, 
   getUserById, 
   updateUser, 
   deleteUser, 
+  createUser,
   getAllProducts, 
   createProduct, 
   updateProduct, 
@@ -13,14 +15,17 @@ import {
   getAllOrders,
   getOrderById,
   updateOrder,
-  deleteOrder
+  deleteOrder,
+  getDashboardStats,
+  getRecentActivity
 } from '../controllers/adminController.js';
 
 const router = express.Router();
 
 // User routes
 router.route('/users')
-  .get(protect, admin, getAllUsers);
+  .get(protect, admin, getAllUsers)
+  .post(protect, admin, createUser);
 
 router.route('/users/:id')
   .get(protect, admin, getUserById)
@@ -30,10 +35,10 @@ router.route('/users/:id')
 // Product routes
 router.route('/products')
   .get(protect, admin, getAllProducts)
-  .post(protect, admin, createProduct);
+  .post(protect, admin, validateProduct, handleValidationErrors, createProduct);
 
 router.route('/products/:id')
-  .put(protect, admin, updateProduct)
+  .put(protect, admin, validateProduct, handleValidationErrors, updateProduct)
   .delete(protect, admin, deleteProduct);
 
 // Order routes
@@ -44,5 +49,13 @@ router.route('/orders/:id')
   .get(protect, admin, getOrderById)
   .put(protect, admin, updateOrder)
   .delete(protect, admin, deleteOrder);
+
+// Dashboard stats route
+router.route('/stats')
+  .get(protect, admin, getDashboardStats);
+
+// Recent activity route
+router.route('/activity')
+  .get(protect, admin, getRecentActivity);
 
 export default router;

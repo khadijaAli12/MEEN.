@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
   },
   isAdmin: {
     type: Boolean,
-    required: true,
     default: false,
   },
   createdAt: {

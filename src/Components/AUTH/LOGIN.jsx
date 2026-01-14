@@ -20,6 +20,20 @@ export default function Login() {
       // Redirect to account page after login
       navigate('/account');
     } catch (err) {
+      // Handle validation errors from backend
+      if (err.message.includes('Validation failed')) {
+        try {
+          const validationError = JSON.parse(err.message);
+          if (validationError.errors && validationError.errors.length > 0) {
+            setError(validationError.errors[0].msg || 'Validation failed');
+            return;
+          }
+        } catch (parseError) {
+          // If parsing fails, use the original error message
+          setError('Validation failed: ' + err.message);
+          return;
+        }
+      }
       setError(err.message || "Failed to login");
     } finally {
       setLoading(false);

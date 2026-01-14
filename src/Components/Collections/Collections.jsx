@@ -1,138 +1,52 @@
-import React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { productAPI } from '../services/apiService';
+import { cartAPI } from '../services/apiService';
+import UserContext from '../context/UserContext';
+import { useContext } from 'react';
 
 export default function Collections() {
     const [hoveredCollection, setHoveredCollection] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [hoveredProduct, setHoveredProduct] = useState(null);
     const [animationTrigger, setAnimationTrigger] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { user } = useContext(UserContext);
+    const navigate = useNavigate();
 
-    const collections = [
-        {
-            name: "Signature Collection",
-            description: "Our timeless classics that define the meen essence",
-            scents: ["Oud Mystique", "Amber Essence", "Velvet Rose", "Sandalwood Dreams"],
-            image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&auto=format&fit=crop",
-            price: "From $180",
-            category: "signature"
-        },
-        {
-            name: "Reserve Collection",
-            description: "Rare and exclusive fragrances for the connoisseur",
-            scents: ["Black Oud", "Royal Amber", "Imperial Iris", "Mystic Incense"],
-            image: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=800&auto=format&fit=crop",
-            price: "From $350",
-            category: "reserve"
-        },
-        {
-            name: "Leather & Spice",
-            description: "Bold compositions for the modern individual",
-            scents: ["Tobacco Noir", "Leather Intense", "Cardamom Fire", "Pepper Wood"],
-            image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=800&auto=format&fit=crop",
-            price: "From $220",
-            category: "bold"
-        },
-        {
-            name: "Limited Editions",
-            description: "Exclusive seasonal releases in limited quantities",
-            scents: ["Autumn Harvest", "Winter Solstice", "Spring Bloom", "Summer Nights"],
-            image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=800&auto=format&fit=crop",
-            price: "From $450",
-            category: "limited"
-        },
-        {
-            name: "Floral Symphony",
-            description: "Delicate and sophisticated floral compositions",
-            scents: ["Jasmine Absolute", "Tuberose Night", "Lily Valley", "Magnolia Bliss"],
-            image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=800&auto=format&fit=crop",
-            price: "From $195",
-            category: "signature"
-        },
-        {
-            name: "Oriental Nights",
-            description: "Rich, opulent fragrances inspired by the East",
-            scents: ["Arabian Oud", "Persian Rose", "Kashmir Saffron", "Silk Road"],
-            image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&auto=format&fit=crop",
-            price: "From $280",
-            category: "bold"
-        }
-    ];
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const data = await productAPI.getProducts();
+                setProducts(data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                setLoading(false);
+            }
+        };
 
-    const individualPerfumes = [
-        {
-            name: "Oud Royale",
-            description: "A magnificent blend of rare agarwood and precious resins",
-            notes: { top: "Bergamot, Pink Pepper", heart: "Oud, Rose", base: "Amber, Musk" },
-            price: "$285",
-            size: "50ml",
-            image: "https://plus.unsplash.com/premium_photo-1676748933022-e51183e997436?q=80&w=871&auto=format&fit=crop",
-            bestseller: true
-        },
-        {
-            name: "Velvet Rose",
-            description: "Delicate Damascus rose wrapped in soft suede and musk",
-            notes: { top: "Lemon, Geranium", heart: "Turkish Rose, Violet", base: "Suede, White Musk" },
-            price: "$220",
-            size: "50ml",
-            image: "https://images.unsplash.com/photo-1610461888750-10bfc601b874?q=80&w=1398&auto=format&fit=crop",
-            bestseller: false
-        },
-        {
-            name: "Noir Intense",
-            description: "Dark and intoxicating tobacco leaf with cognac warmth",
-            notes: { top: "Spices, Cognac", heart: "Tobacco, Tonka", base: "Vanilla, Cedarwood" },
-            price: "$245",
-            size: "50ml",
-            image: "https://images.unsplash.com/photo-1458538977777-0549b2370168?q=80&w=1474&auto=format&fit=crop",
-            bestseller: true
-        },
-        {
-            name: "Amber Essence",
-            description: "Warm and sensual amber with golden honey undertones",
-            notes: { top: "Citrus, Saffron", heart: "Amber, Jasmine", base: "Vanilla, Patchouli" },
-            price: "$210",
-            size: "50ml",
-            image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&auto=format&fit=crop",
-            bestseller: false
-        },
-        {
-            name: "Jasmine Absolute",
-            description: "Pure jasmine extracted from night-blooming flowers",
-            notes: { top: "Green Notes, Mandarin", heart: "Jasmine, Ylang-Ylang", base: "Sandalwood, Benzoin" },
-            price: "$265",
-            size: "50ml",
-            image: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=500&auto=format&fit=crop",
-            bestseller: false
-        },
-        {
-            name: "Leather Intense",
-            description: "Bold leather accord with smoky birch tar complexity",
-            notes: { top: "Black Pepper, Cardamom", heart: "Leather, Iris", base: "Birch Tar, Vetiver" },
-            price: "$255",
-            size: "50ml",
-            image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&auto=format&fit=crop",
-            bestseller: true
-        },
-        {
-            name: "Sandalwood Dreams",
-            description: "Creamy Australian sandalwood with exotic spices",
-            notes: { top: "Cardamom, Bergamot", heart: "Sandalwood, Cedar", base: "Amber, Musk" },
-            price: "$230",
-            size: "50ml",
-            image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&auto=format&fit=crop",
-            bestseller: false
-        },
-        {
-            name: "Black Oud Reserve",
-            description: "Ultra-rare black oud from aged aquilaria trees",
-            notes: { top: "Saffron, Nutmeg", heart: "Black Oud, Rose", base: "Amber, Leather" },
-            price: "$450",
-            size: "50ml",
-            image: "https://plus.unsplash.com/premium_photo-1676748933022-e51183e997436?q=80&w=871&auto=format&fit=crop",
-            bestseller: true
+        fetchProducts();
+    }, []);
+
+    const handleAddToCart = async (productId) => {
+        if (!user) {
+            // Redirect to login if not authenticated
+            navigate('/login');
+            return;
         }
-    ];
+
+        try {
+            await cartAPI.addToCart({
+                productId: productId,
+                quantity: 1
+            });
+            alert('Product added to cart successfully!');
+        } catch (err) {
+            alert('Error adding product to cart: ' + err.message);
+        }
+    };
 
     const categories = [
         { id: 'all', label: 'All Collections' },
@@ -142,9 +56,9 @@ export default function Collections() {
         { id: 'limited', label: 'Limited Edition' }
     ];
 
-    const filteredCollections = selectedCategory === 'all' 
-        ? collections 
-        : collections.filter(c => c.category === selectedCategory);
+    const filteredProducts = selectedCategory === 'all' 
+        ? products 
+        : products.filter(p => p.category === selectedCategory);
 
     // Trigger animations on mount
     React.useEffect(() => {
@@ -224,7 +138,7 @@ export default function Collections() {
             {/* Collections Grid - Modern Card Layout with Asymmetric Design */}
             <div className="max-w-7xl mx-auto px-6 mb-28 relative">
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredCollections.map((collection, index) => (
+                    {filteredProducts.map((collection, index) => (
                         <div
                             key={index}
                             className={`group relative bg-white border border-[#3E2723]/20 rounded-3xl overflow-hidden transition-all duration-700 hover:shadow-2xl hover:shadow-[#3E2723]/10 transform hover:-translate-y-2 ${
@@ -247,7 +161,7 @@ export default function Collections() {
                                 
                                 {/* Modern Price Tag */}
                                 <div className="absolute top-4 right-4 bg-[#3E2723] text-[#F5F1ED] px-4 py-2 rounded-full text-sm font-light">
-                                    {collection.price}
+                                    ${collection.price}
                                 </div>
                             </div>
 
@@ -262,10 +176,10 @@ export default function Collections() {
                                 
                                 {/* Modern CTA Button */}
                                 <Link
-                                    to="#"
+                                    to={`/product/${collection._id}`}
                                     className="inline-flex items-center gap-3 text-[#3E2723] hover:text-[#6D4C41] uppercase tracking-wider font-light group/link transition-colors"
                                 >
-                                    <span>Explore Collection</span>
+                                    <span>View Details</span>
                                     <svg className="w-5 h-5 transform group-hover/link:translate-x-2 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                     </svg>
@@ -287,7 +201,7 @@ export default function Collections() {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {individualPerfumes.filter(p => p.bestseller).map((perfume, index) => (
+                    {products.filter(p => p._id).map((perfume, index) => (
                         <div
                             key={index}
                             className={`group relative bg-white border border-[#3E2723]/20 rounded-3xl overflow-hidden transition-all duration-700 hover:shadow-2xl hover:shadow-[#3E2723]/10 transform hover:-translate-y-2 ${
@@ -300,7 +214,7 @@ export default function Collections() {
                             onMouseLeave={() => setHoveredProduct(null)}
                         >
                             {/* Bestseller Badge */}
-                            {perfume.bestseller && (
+                            {(perfume.bestseller || perfume.rating >= 4) && (
                                 <div className="absolute top-6 right-6 z-10 px-4 py-2 bg-[#3E2723] text-[#F5F1ED] text-xs tracking-wider uppercase rounded-full">
                                     Bestseller
                                 </div>
@@ -329,13 +243,16 @@ export default function Collections() {
                                 </p>
                                 
                                 <div className="flex items-center justify-between mb-6">
-                                    <span className="text-sm text-[#6D4C41] font-light">{perfume.size}</span>
-                                    <span className="text-xl font-extralight text-[#3E2723]">{perfume.price}</span>
+                                    <span className="text-sm text-[#6D4C41] font-light">50ml</span>
+                                    <span className="text-xl font-extralight text-[#3E2723]">${typeof perfume.price === 'number' ? perfume.price.toFixed(2) : perfume.price}</span>
                                 </div>
 
                                 {/* Modern Add to Cart Button */}
-                                <button className="w-full py-4 bg-[#3E2723] text-[#F5F1ED] text-sm tracking-wider uppercase font-light hover:bg-[#6D4C41] transition-all duration-500 rounded-xl transform hover:scale-[1.02]">
-                                    <Link to="/cart">Add to Cart</Link>
+                                <button 
+                                    onClick={() => handleAddToCart(perfume._id)}
+                                    className="w-full py-4 bg-[#3E2723] text-[#F5F1ED] text-sm tracking-wider uppercase font-light hover:bg-[#6D4C41] transition-all duration-500 rounded-xl transform hover:scale-[1.02]"
+                                >
+                                    Add to Cart
                                 </button>
                             </div>
                         </div>

@@ -52,8 +52,10 @@ const UserContextProvider = ({ children }) => {
     }
   };
 
+  const isAdmin = user?.isAdmin || false;
+
   return (
-    <UserContext.Provider value={{ user, setUser, login, logout, register, loading }}>
+    <UserContext.Provider value={{ user, setUser, login, logout, register, loading, isAdmin }}>
       {children}
     </UserContext.Provider>
   );

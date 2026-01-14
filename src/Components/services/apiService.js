@@ -36,6 +36,10 @@ const apiRequest = async (endpoint, options = {}) => {
       if (response.status === 503) {
         throw new Error('Service temporarily unavailable. Database connection failed.');
       }
+      // For validation errors (400), return the full error data
+      if (response.status === 400) {
+        throw new Error(JSON.stringify(data));
+      }
       throw new Error(data.message || 'Something went wrong');
     }
     
@@ -114,4 +118,62 @@ export const orderAPI = {
     method: 'PUT',
     body: JSON.stringify(paymentResult),
   }),
+};
+
+// Admin API
+export const adminAPI = {
+  // User management
+  getAllUsers: () => apiRequest('admin/users'),
+  
+  getUserById: (id) => apiRequest(`admin/users/${id}`),
+  
+  updateUser: (id, userData) => apiRequest(`admin/users/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(userData),
+  }),
+  
+  deleteUser: (id) => apiRequest(`admin/users/${id}`, {
+    method: 'DELETE',
+  }),
+  
+  createUser: (userData) => apiRequest('admin/users', {
+    method: 'POST',
+    body: JSON.stringify(userData),
+  }),
+  
+  // Product management
+  getAllProducts: () => apiRequest('admin/products'),
+  
+  createProduct: (productData) => apiRequest('admin/products', {
+    method: 'POST',
+    body: JSON.stringify(productData),
+  }),
+  
+  updateProduct: (id, productData) => apiRequest(`admin/products/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(productData),
+  }),
+  
+  deleteProduct: (id) => apiRequest(`admin/products/${id}`, {
+    method: 'DELETE',
+  }),
+  
+  // Order management
+  getAllOrders: () => apiRequest('admin/orders'),
+  
+  getOrderById: (id) => apiRequest(`admin/orders/${id}`),
+  
+  updateOrder: (id, orderData) => apiRequest(`admin/orders/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(orderData),
+  }),
+  
+  deleteOrder: (id) => apiRequest(`admin/orders/${id}`, {
+    method: 'DELETE',
+  }),
+  
+  // Dashboard stats
+  getDashboardStats: () => apiRequest('admin/stats'),
+  
+  getRecentActivity: () => apiRequest('admin/activity'),
 };

@@ -20,8 +20,9 @@ const addOrderItems = async (req, res) => {
   }
 
   try {
+    console.log('Creating order with items:', orderItems); // Debug log
     const order = new Order({
-      orderItems,
+      items: orderItems,
       user: req.user._id,
       shippingAddress,
       paymentMethod,
@@ -29,11 +30,14 @@ const addOrderItems = async (req, res) => {
       taxPrice,
       shippingPrice,
       totalPrice,
+      status: 'Pending', // Initialize status as Pending
     });
 
     const createdOrder = await order.save();
+    console.log('Created order:', createdOrder); // Debug log
     res.status(201).json(createdOrder);
   } catch (error) {
+    console.error('Error creating order:', error); // Debug log
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -43,10 +47,13 @@ const addOrderItems = async (req, res) => {
 // @access  Private
 const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate(
-      'user',
-      'name email'
-    );
+    console.log('User API - Fetching order ID:', req.params.id); // Debug log
+    const order = await Order.findById(req.params.id)
+      .populate('user', 'name email')
+      .populate('items.product')
+      .select('-paymentResult');
+    
+    console.log('User API - Fetched order:', order); // Debug log
 
     if (order) {
       res.json(order);
@@ -90,7 +97,10 @@ const updateOrderToPaid = async (req, res) => {
 // @access  Private
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id });
+    const orders = await Order.find({ user: req.user._id })
+      .populate('items.product')
+      .select('-paymentResult')
+      .sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

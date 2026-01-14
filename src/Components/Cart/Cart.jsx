@@ -28,14 +28,19 @@ export default function Cart() {
   const removeFromCart = async (productId) => {
     try {
       await cartAPI.removeFromCart(productId);
-      setCartItems(prevItems => prevItems.filter(item => item.product._id !== productId));
+      setCartItems(prevItems => prevItems.filter(item => item.product && item.product._id !== productId));
     } catch (err) {
       setError(err.message || 'Failed to remove item from cart');
     }
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => {
+      if (item.product && item.product.price) {
+        return total + (item.product.price * item.quantity);
+      }
+      return total;
+    }, 0);
   };
 
   if (loading) {
@@ -88,27 +93,27 @@ export default function Cart() {
             <div className="grid md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <div className="space-y-6">
-                  {cartItems.map((item) => (
-                    <div key={item.product._id} className="flex items-center gap-6 bg-[#F5F1ED] border border-[#3E2723]/20 p-6 rounded-2xl">
+                  {cartItems.filter(item => item.product).map((item) => (
+                    <div key={item.product._id || item._id} className="flex items-center gap-6 bg-[#F5F1ED] border border-[#3E2723]/20 p-6 rounded-2xl">
                       <div className="w-24 h-24 bg-white border border-[#3E2723]/20 rounded-xl overflow-hidden">
                         <img 
-                          src={item.product.image || "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=200&auto=format&fit=crop"} 
-                          alt={item.product.name}
+                          src={item.product?.image || "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=200&auto=format&fit=crop"} 
+                          alt={item.product?.name || "Product"}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       
                       <div className="flex-1">
-                        <h3 className="text-xl font-extralight text-[#3E2723] mb-2">{item.product.name}</h3>
-                        <p className="text-sm text-[#6D4C41] font-light mb-3">{item.product.description}</p>
+                        <h3 className="text-xl font-extralight text-[#3E2723] mb-2">{item.product?.name || 'Product'}</h3>
+                        <p className="text-sm text-[#6D4C41] font-light mb-3">{item.product?.description || 'No description available'}</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-extralight text-[#3E2723]">${item.product.price}</span>
+                          <span className="text-lg font-extralight text-[#3E2723]">${item.product?.price || 0}</span>
                           <span className="text-lg font-extralight text-[#3E2723]">Qty: {item.quantity}</span>
                         </div>
                       </div>
                       
                       <button 
-                        onClick={() => removeFromCart(item.product._id)}
+                        onClick={() => item.product && removeFromCart(item.product._id)}
                         className="text-[#6D4C41] hover:text-[#3E2723] transition-colors"
                       >
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

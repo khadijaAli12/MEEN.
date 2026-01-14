@@ -20,6 +20,23 @@ export default function Signup() {
       return;
     }
     
+    // Basic client-side validation to provide immediate feedback
+    if (name.trim().length < 2) {
+      setError("Name must be at least 2 characters long");
+      return;
+    }
+    
+    if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+      setError("Name must contain only letters and spaces");
+      return;
+    }
+    
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+    if (password.length < 6 || !passwordRegex.test(password)) {
+      setError("Password must be at least 6 characters with uppercase, lowercase, and number");
+      return;
+    }
+    
     setLoading(true);
     setError("");
     
@@ -28,6 +45,20 @@ export default function Signup() {
       // Redirect to account page after signup
       navigate('/account');
     } catch (err) {
+      // Handle validation errors from backend
+      if (err.message.includes('Validation failed')) {
+        try {
+          const validationError = JSON.parse(err.message);
+          if (validationError.errors && validationError.errors.length > 0) {
+            setError(validationError.errors[0].msg || 'Validation failed');
+            return;
+          }
+        } catch (parseError) {
+          // If parsing fails, use the original error message
+          setError('Validation failed: ' + err.message);
+          return;
+        }
+      }
       setError(err.message || "Failed to create account");
     } finally {
       setLoading(false);
@@ -95,6 +126,7 @@ export default function Signup() {
               required
               minLength="6"
             />
+            <p className="text-xs text-[#6D4C41] mt-1 font-light">Password must contain at least 6 characters, with uppercase, lowercase, and number</p>
           </div>
 
           <div>

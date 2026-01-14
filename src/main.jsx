@@ -13,6 +13,8 @@ import Login from './Components/AUTH/LOGIN.jsx'
 import Signup from './Components/AUTH/Signup.jsx'
 import UserContextProvider from './Components/context/UserContextProvider.jsx'
 import Loader from './Components/Loader/Loader.jsx'
+import { AdminRoutes, AdminDashboard, UsersManagement, ProductsManagement, OrdersManagement } from './AdminRoutes.jsx'
+import ProductDetail from './Components/Product/ProductDetail.jsx'
 
 // const router = createBrowserRouter([
 //   {
@@ -44,19 +46,28 @@ import Loader from './Components/Loader/Loader.jsx'
 // ])
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<Routes />}>
-      <Route path='/' element={<Home />} />
-      <Route path='about' element={<About />} />
-      <Route path='collections' element={<Collections />} />
-      <Route path='cart' element={<Cart />} />
-      <Route path='checkout' element={<Checkout />} />
-      <Route path='order/:id' element={<OrderConfirmation />} />
-      <Route path='contact' element={<Contact />} />
-      <Route path='login' element={<Login />} />
-      <Route path='signup' element={<Signup />} />
-      <Route path='profile' element={<Profile />} />
-      <Route path='account' element={<User />} />
-    </Route>
+    <>
+      <Route path='/' element={<Routes />}>
+        <Route path='/' element={<Home />} />
+        <Route path='about' element={<About />} />
+        <Route path='collections' element={<Collections />} />
+        <Route path='cart' element={<Cart />} />
+        <Route path='checkout' element={<Checkout />} />
+        <Route path='order/:id' element={<OrderConfirmation />} />
+        <Route path='contact' element={<Contact />} />
+        <Route path='login' element={<Login />} />
+        <Route path='signup' element={<Signup />} />
+        <Route path='profile' element={<Profile />} />
+        <Route path='account' element={<User />} />
+        <Route path='product/:id' element={<ProductDetail />} />
+      </Route>
+      <Route path='/admin' element={<AdminRoutes />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path='users' element={<UsersManagement />} />
+        <Route path='products' element={<ProductsManagement />} />
+        <Route path='orders' element={<OrdersManagement />} />
+      </Route>
+    </>
   )
 )
 

@@ -19,8 +19,13 @@ export default function Checkout() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) {
+      // Redirect to login if user is not authenticated
+      navigate('/login');
+      return;
+    }
     fetchCart();
-  }, []);
+  }, [user, navigate]);
 
   const fetchCart = async () => {
     try {
@@ -35,7 +40,12 @@ export default function Checkout() {
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => {
+      if (item.product && item.product.price && item.quantity) {
+        return total + (item.product.price * item.quantity);
+      }
+      return total;
+    }, 0);
   };
 
   const handleInputChange = (e) => {
@@ -53,16 +63,30 @@ export default function Checkout() {
       return;
     }
     
+    if (!paymentMethod) {
+      setError('Please select a payment method');
+      return;
+    }
+    
     setOrderProcessing(true);
     setError('');
     
     try {
-      // Create order items array
-      const orderItems = cartItems.map(item => ({
+      // Create order items array with validation
+      const validCartItems = cartItems.filter(item => item.product && item.product._id && item.quantity && item.product.price);
+      
+      if (validCartItems.length === 0) {
+        setError('Cart is empty or items are invalid');
+        return;
+      }
+      
+      const orderItems = validCartItems.map(item => ({
         product: item.product._id,
         quantity: item.quantity,
         price: item.product.price
       }));
+      
+      console.log('Order items being sent:', orderItems); // Debug log
       
       // Calculate prices
       const itemsPrice = getTotalPrice();
@@ -81,12 +105,25 @@ export default function Checkout() {
         totalPrice
       };
       
+      console.log('Order data being sent:', orderData); // Debug log
+      
       // Create order
       const order = await orderAPI.createOrder(orderData);
       
       // Redirect to order confirmation
       navigate(`/order/${order._id}`);
     } catch (err) {
+      // Handle validation errors from backend
+      if (err.message.includes('Validation failed')) {
+        try {
+          const validationError = JSON.parse(err.message);
+          setError(validationError.message || 'Validation failed: ' + (validationError.errors ? validationError.errors[0]?.msg : 'Invalid data'));
+          return;
+        } catch (parseError) {
+          setError('Validation failed: Invalid data provided');
+          return;
+        }
+      }
       setError(err.message || 'Failed to process order');
     } finally {
       setOrderProcessing(false);
@@ -97,6 +134,14 @@ export default function Checkout() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center py-20">
         <div className="text-2xl text-[#3E2723]">Loading checkout...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center py-20">
+        <div className="text-2xl text-red-600">Please login to checkout</div>
       </div>
     );
   }
@@ -264,12 +309,12 @@ export default function Checkout() {
                 <h2 className="text-2xl font-extralight text-[#3E2723] mb-6">Order Summary</h2>
                 
                 <div className="space-y-4 mb-8">
-                  {cartItems.map(item => (
-                    <div key={item.product._id} className="flex justify-between">
+                  {cartItems.filter(item => item.product).map(item => (
+                    <div key={item.product?._id || item._id} className="flex justify-between">
                       <div>
-                        <span className="text-[#3E2723] font-light">{item.product.name} × {item.quantity}</span>
+                        <span className="text-[#3E2723] font-light">{item.product?.name || 'Product'} × {item.quantity}</span>
                       </div>
-                      <span className="text-[#3E2723] font-light">${(item.product.price * item.quantity).toFixed(2)}</span>
+                      <span className="text-[#3E2723] font-light">${item.product?.price && item.quantity ? (item.product.price * item.quantity).toFixed(2) : '0.00'}</span>
                     </div>
                   ))}
                   
