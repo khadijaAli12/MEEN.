@@ -15,7 +15,8 @@
     "data:destroy": "node server/seeder.js -d",
     "seed": "node server/seeder.js",
     "seed:destroy": "node server/seeder.js -d",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "start": "node server/prod-server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
