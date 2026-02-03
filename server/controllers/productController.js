@@ -1,11 +1,75 @@
 import Product from '../models/Product.js';
+import { getCache, setCache } from '../utils/cache.js';
+
+// @desc    Search products
+// @route   GET /api/products/search
+// @access  Public
+const searchProducts = async (req, res) => {
+  try {
+    const { q, category, minPrice, maxPrice, sortBy = 'name', order = 'asc' } = req.query;
+    
+    // Build search query
+    let query = {};
+    
+    // Text search
+    if (q) {
+      query.$or = [
+        { name: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } },
+        { brand: { $regex: q, $options: 'i' } }
+      ];
+    }
+    
+    // Category filter
+    if (category && category !== 'all') {
+      query.category = category;
+    }
+    
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = parseFloat(minPrice);
+      if (maxPrice) query.price.$lte = parseFloat(maxPrice);
+    }
+    
+    // Build sort object
+    let sort = {};
+    const sortField = sortBy === 'price' ? 'price' : 
+                     sortBy === 'rating' ? 'rating' : 
+                     sortBy === 'date' ? 'createdAt' : 'name';
+    sort[sortField] = order === 'desc' ? -1 : 1;
+    
+    const products = await Product.find(query).sort(sort);
+    
+    res.json({
+      products,
+      totalCount: products.length,
+      query: { q, category, minPrice, maxPrice, sortBy, order }
+    });
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ message: 'Search failed' });
+  }
+};
 
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res) => {
   try {
+    // Check cache first
+    const cacheKey = 'products_list';
+    const cachedProducts = getCache(cacheKey);
+    
+    if (cachedProducts) {
+      return res.json(cachedProducts);
+    }
+    
     const products = await Product.find({});
+    
+    // Cache the results for 5 minutes
+    setCache(cacheKey, products, 300000);
+    
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -17,9 +81,21 @@ const getProducts = async (req, res) => {
 // @access  Public
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const productId = req.params.id;
+    
+    // Check cache first
+    const cacheKey = `product_${productId}`;
+    const cachedProduct = getCache(cacheKey);
+    
+    if (cachedProduct) {
+      return res.json(cachedProduct);
+    }
+    
+    const product = await Product.findById(productId);
 
     if (product) {
+      // Cache the product for 10 minutes
+      setCache(cacheKey, product, 600000);
       res.json(product);
     } else {
       res.status(404).json({ message: 'Product not found' });
@@ -100,4 +176,4 @@ const updateProduct = async (req, res) => {
   }
 };
 
-export { getProducts, getProductById, deleteProduct, createProduct, updateProduct };
+export { getProducts, getProductById, deleteProduct, createProduct, updateProduct, searchProducts };

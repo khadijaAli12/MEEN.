@@ -177,3 +177,13 @@ export const adminAPI = {
   
   getRecentActivity: () => apiRequest('admin/activity'),
 };
+
+// Payment API
+export const paymentAPI = {
+  createPaymentIntent: (paymentData) => apiRequest('payment/create-payment-intent', {
+    method: 'POST',
+    body: JSON.stringify(paymentData),
+  }),
+  
+  getPaymentStatus: (orderId) => apiRequest(`payment/status/${orderId}`),
+};

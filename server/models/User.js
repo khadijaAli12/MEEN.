@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// Create indexes for better performance
+userSchema.index({ email: 1 });
+userSchema.index({ createdAt: -1 });
+userSchema.index({ isAdmin: 1 });
+
 // Encrypt password using bcrypt
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {

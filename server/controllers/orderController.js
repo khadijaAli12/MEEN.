@@ -1,5 +1,7 @@
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
+import User from '../models/User.js';
+import { sendOrderConfirmation } from '../utils/emailService.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -35,6 +37,18 @@ const addOrderItems = async (req, res) => {
 
     const createdOrder = await order.save();
     console.log('Created order:', createdOrder); // Debug log
+    
+    // Send order confirmation email
+    try {
+      const user = await User.findById(req.user._id);
+      if (user) {
+        await sendOrderConfirmation(createdOrder, user.email, user.name);
+      }
+    } catch (emailError) {
+      console.error('Failed to send order confirmation email:', emailError);
+      // Don't fail order creation if email fails
+    }
+    
     res.status(201).json(createdOrder);
   } catch (error) {
     console.error('Error creating order:', error); // Debug log

@@ -115,8 +115,8 @@ const validateOrder = [
     .withMessage('Country must be at least 2 characters'),
   body('paymentMethod')
     .trim()
-    .isIn(['PayPal', 'Stripe', 'Cash on Delivery', 'Bank Transfer'])
-    .withMessage('Payment method must be PayPal, Stripe, Cash on Delivery, or Bank Transfer')
+    .isIn(['Credit Card', 'PayPal', 'Stripe', 'Cash on Delivery', 'Bank Transfer'])
+    .withMessage('Payment method must be Credit Card, PayPal, Stripe, Cash on Delivery, or Bank Transfer')
 ];
 
 export { 

@@ -2,6 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/UserContext';
 import { cartAPI, orderAPI } from '../services/apiService';
+import { paymentAPI } from '../services/apiService';
+
+// Note: Stripe integration requires API keys to be configured
+// For demo purposes, we'll skip actual payment processing
+const loadStripe = async () => {
+  // This is a placeholder for when Stripe is properly configured
+  return null;
+};
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -110,7 +118,8 @@ export default function Checkout() {
       // Create order
       const order = await orderAPI.createOrder(orderData);
       
-      // Redirect to order confirmation
+      // For now, handle all payment methods the same way
+      // Stripe integration requires proper API keys and setup
       navigate(`/order/${order._id}`);
     } catch (err) {
       // Handle validation errors from backend

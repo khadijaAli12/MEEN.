@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
+import { sendWelcomeEmail } from '../utils/emailService.js';
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -22,6 +23,14 @@ const registerUser = async (req, res) => {
       email,
       password,
     });
+
+    // Send welcome email
+    try {
+      await sendWelcomeEmail(email, name);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Don't fail registration if email fails
+    }
 
     res.status(201).json({
       _id: user._id,

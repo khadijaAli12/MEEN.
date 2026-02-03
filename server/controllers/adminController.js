@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
+import { getCache, setCache } from '../utils/cache.js';
 
 // @desc    Get all users
 // @route   GET /api/admin/users
@@ -281,26 +282,49 @@ const createUser = async (req, res) => {
 // @access  Private/Admin
 const getDashboardStats = async (req, res) => {
   try {
-    // Get counts for users, products, and orders
-    const userCount = await User.countDocuments({});
-    const productCount = await Product.countDocuments({});
-    const orderCount = await Order.countDocuments({});
+    // Check cache first
+    const cacheKey = 'dashboard_stats';
+    const cachedStats = getCache(cacheKey);
     
-    // Calculate total revenue from paid orders
-    const paidOrders = await Order.find({ isPaid: true });
-    const totalRevenue = paidOrders.reduce((sum, order) => {
-      return sum + order.totalPrice;
-    }, 0);
+    if (cachedStats) {
+      return res.json(cachedStats);
+    }
     
-    res.json({
-      users: userCount,
-      products: productCount,
-      orders: orderCount,
-      revenue: totalRevenue
-    });
+    const [usersCount, productsCount, ordersCount, paidOrdersCount] = await Promise.all([
+      User.countDocuments(),
+      Product.countDocuments(),
+      Order.countDocuments(),
+      Order.countDocuments({ isPaid: true })
+    ]);
+    
+    const totalRevenue = await Order.aggregate([
+      { $match: { isPaid: true } },
+      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+    ]);
+    
+    const monthlySales = await Order.aggregate([
+      { $match: { isPaid: true } },
+      { $group: { _id: { $month: '$createdAt' }, total: { $sum: '$totalPrice' } } },
+      { $sort: { _id: 1 } }
+    ]);
+    
+    const stats = {
+      users: usersCount,
+      products: productsCount,
+      orders: ordersCount,
+      paidOrders: paidOrdersCount,
+      totalRevenue: totalRevenue[0]?.total || 0,
+      monthlySales,
+      updatedAt: new Date().toISOString()
+    };
+    
+    // Cache for 10 minutes
+    setCache(cacheKey, stats, 600000);
+    
+    res.json(stats);
   } catch (error) {
-    console.error('Get dashboard stats error:', error.message);
-    res.status(500).json({ message: 'Server error retrieving dashboard stats' });
+    console.error('Dashboard stats error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -309,66 +333,33 @@ const getDashboardStats = async (req, res) => {
 // @access  Private/Admin
 const getRecentActivity = async (req, res) => {
   try {
-    // Get recent users (last 7 days)
-    const recentUsers = await User.find({})
-      .sort({ createdAt: -1 })
-      .limit(5);
+    const cacheKey = 'recent_activity';
+    const cachedActivity = getCache(cacheKey);
     
-    // Get recent products (last 7 days)
-    const recentProducts = await Product.find({})
-      .sort({ createdAt: -1 })
-      .limit(5);
+    if (cachedActivity) {
+      return res.json(cachedActivity);
+    }
     
-    // Get recent orders (last 7 days)
-    const recentOrders = await Order.find({})
-      .populate('user', 'name email')
-      .populate('items.product')
-      .sort({ createdAt: -1 })
-      .limit(5);
+    const [recentOrders, recentUsers, recentProducts] = await Promise.all([
+      Order.find().sort({ createdAt: -1 }).limit(5).populate('user', 'name email'),
+      User.find().sort({ createdAt: -1 }).limit(5),
+      Product.find().sort({ createdAt: -1 }).limit(5)
+    ]);
     
-    // Combine and sort all activities by date
-    const activities = [];
+    const activity = {
+      recentOrders,
+      recentUsers,
+      recentProducts,
+      updatedAt: new Date().toISOString()
+    };
     
-    recentUsers.forEach(user => {
-      activities.push({
-        type: 'user',
-        action: 'New user registered',
-        description: `${user.name} joined the platform`,
-        timestamp: user.createdAt,
-        user: user.name
-      });
-    });
+    // Cache for 5 minutes
+    setCache(cacheKey, activity, 300000);
     
-    recentProducts.forEach(product => {
-      activities.push({
-        type: 'product',
-        action: 'New product added',
-        description: `${product.name} added to inventory`,
-        timestamp: product.createdAt,
-        product: product.name
-      });
-    });
-    
-    recentOrders.forEach(order => {
-      activities.push({
-        type: 'order',
-        action: 'Order placed',
-        description: `Order #${order._id} placed by ${order.user?.name || 'Customer'}`,
-        timestamp: order.createdAt,
-        order: order._id,
-        user: order.user?.name || 'Customer'
-      });
-    });
-    
-    // Sort by timestamp, most recent first, and take top 5
-    const sortedActivities = activities
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      .slice(0, 5);
-    
-    res.json(sortedActivities);
+    res.json(activity);
   } catch (error) {
-    console.error('Get recent activity error:', error.message);
-    res.status(500).json({ message: 'Server error retrieving recent activity' });
+    console.error('Recent activity error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

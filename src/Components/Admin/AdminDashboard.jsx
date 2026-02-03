@@ -21,7 +21,53 @@ const AdminDashboard = () => {
         setStats(statsData);
         
         const activityData = await adminAPI.getRecentActivity();
-        setRecentActivity(activityData);
+        
+        // The new API returns structured data, convert to old format for compatibility
+        const formattedActivity = [];
+        
+        if (activityData.recentOrders) {
+          activityData.recentOrders.forEach(order => {
+            formattedActivity.push({
+              type: 'order',
+              action: 'New order placed',
+              description: `Order #${order._id} placed by ${order.user?.name || 'Customer'}`,
+              timestamp: order.createdAt,
+              order: order._id,
+              user: order.user?.name || 'Customer'
+            });
+          });
+        }
+        
+        if (activityData.recentUsers) {
+          activityData.recentUsers.forEach(user => {
+            formattedActivity.push({
+              type: 'user',
+              action: 'New user registered',
+              description: `${user.name} joined the platform`,
+              timestamp: user.createdAt,
+              user: user.name
+            });
+          });
+        }
+        
+        if (activityData.recentProducts) {
+          activityData.recentProducts.forEach(product => {
+            formattedActivity.push({
+              type: 'product',
+              action: 'New product added',
+              description: `${product.name} added to inventory`,
+              timestamp: product.createdAt,
+              product: product.name
+            });
+          });
+        }
+        
+        // Sort by timestamp, most recent first, and take top 5
+        const sortedActivity = formattedActivity
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          .slice(0, 5);
+          
+        setRecentActivity(sortedActivity);
       } catch (err) {
         setError(err.message);
       } finally {
